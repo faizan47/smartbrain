@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import Logo from '../components/Logo/Logo.jsx';
 import Navigation from '../components/Navigation/Navigation.jsx';
@@ -9,7 +9,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-	apiKey: 'YOUR_API_KEY'
+	apiKey: 'ef3baf8d3fb946259dfdad8a382b3538'
 });
 
 const model = 'a403429f2ddf4b49b307e318f00e528b';
@@ -17,7 +17,7 @@ const model = 'a403429f2ddf4b49b307e318f00e528b';
 const particlesOptions = {
 	particles: {
 		number: {
-			value: 0,
+			value: 15,
 			density: {
 				enable: true,
 				value_area: 800
@@ -36,6 +36,14 @@ class App extends Component {
 		};
 	}
 
+	onInputChange = (e) => {
+		this.setState({ imageUrl: e.target.value });
+	};
+
+	onSubmit = async () => {
+		await this.sendImage();
+	};
+
 	sendImage = async () => {
 		try {
 			const data = await app.models.predict(model, this.state.imageUrl);
@@ -47,6 +55,7 @@ class App extends Component {
 			console.log(error, 'error');
 		}
 	};
+
 	generateFaceStyles = (data) => {
 		const { top_row, bottom_row, left_col, right_col } = data;
 		const image = document.querySelector('#image');
@@ -58,13 +67,20 @@ class App extends Component {
 		};
 		this.setState({ boxes: style });
 	};
-	onInputChange = (e) => {
-		this.setState({ imageUrl: e.target.value });
-	};
-	onSubmit = async () => {
-		await this.sendImage();
-	};
 
+	render() {
+		// new render function after data loss
+		return (
+			<div className="App">
+				<Particles className="particles" params={particlesOptions} />
+				<Navigation />
+				<Logo />
+				<Score />
+				<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
+				<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
+			</div>
+		);
+	}
 	// render() {
 	// 	return (
 	// 		<div className="App">
@@ -77,18 +93,6 @@ class App extends Component {
 	// 		</div>
 	// 	);
 	// }
-	render() {
-		return (
-			<div className="App">
-				<Particles className="particles" params={particlesOptions} />
-				<Navigation />
-				<Logo />
-				<Score />
-				<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
-				<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
-			</div>
-		);
-	}
 }
 
 export default App;
