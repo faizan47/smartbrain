@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
 import Logo from '../components/Logo/Logo.jsx';
 import Navigation from '../components/Navigation/Navigation.jsx';
 import Score from '../components/Score/Score.jsx';
 import FaceRecognition from '../components/FaceRecognition/FaceRecognition';
 import FacePicture from '../components/FaceRecognition/FacePicture';
+import Register from '../components/Register/Register';
+import Login from '../components/Login/Login';
 import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 
+const Clarifai_API_KEY = process.env.REACT_APP_CLARIFAI_API_KEY;
+
 const app = new Clarifai.App({
-	apiKey: 'YOUR_API_KEY'
+	apiKey: Clarifai_API_KEY
 });
 
 const model = 'a403429f2ddf4b49b307e318f00e528b';
@@ -17,7 +21,7 @@ const model = 'a403429f2ddf4b49b307e318f00e528b';
 const particlesOptions = {
 	particles: {
 		number: {
-			value: 15,
+			value: 60,
 			density: {
 				enable: true,
 				value_area: 800
@@ -32,7 +36,9 @@ class App extends Component {
 		this.state = {
 			input: '',
 			imageUrl: '',
-			boxes: {}
+			boxes: {},
+			route: 'login',
+			isLoggedIn: false
 		};
 	}
 
@@ -67,18 +73,38 @@ class App extends Component {
 		};
 		this.setState({ boxes: style });
 	};
-
+	onRouteChange = (route) => {
+		if (route === 'home') {
+			this.setState({ isLoggedIn: true });
+		} else if (route === 'logout') {
+			this.setState({ isLoggedIn: false });
+		}
+		this.setState({ route });
+	};
 	render() {
+		const AuthFlow = () => {
+			if (this.state.route === 'login' || this.state.route === 'logout') {
+				return <Login onRouteChange={this.onRouteChange} />;
+			} else if (this.state.route === 'register') {
+				return <Register onRouteChange={this.onRouteChange} />;
+			} else {
+				return (
+					<Fragment>
+						<Score />
+						<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
+						<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
+					</Fragment>
+				);
+			}
+		};
 		return (
 			<div className="App">
 				<Particles className="particles" params={particlesOptions} />
 				<header className="mt2">
-					<Logo />
-					<Navigation />
+					<Logo onRouteChange={this.onRouteChange} />
+					<Navigation onRouteChange={this.onRouteChange} isLoggedIn={this.state.isLoggedIn} />
 				</header>
-				<Score />
-				<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
-				<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
+				{AuthFlow()}
 			</div>
 		);
 	}
