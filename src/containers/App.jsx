@@ -9,7 +9,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-	apiKey: 'ef3baf8d3fb946259dfdad8a382b3538'
+	apiKey: 'YOUR_API_KEY'
 });
 
 const model = 'a403429f2ddf4b49b307e318f00e528b';
@@ -69,30 +69,19 @@ class App extends Component {
 	};
 
 	render() {
-		// new render function after data loss
 		return (
 			<div className="App">
 				<Particles className="particles" params={particlesOptions} />
-				<Navigation />
-				<Logo />
+				<header className="mt2">
+					<Logo />
+					<Navigation />
+				</header>
 				<Score />
 				<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
 				<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
 			</div>
 		);
 	}
-	// render() {
-	// 	return (
-	// 		<div className="App">
-	// 			<Particles className="particles" params={particlesOptions} />
-	// 			<Logo />
-	// 			<Navigation />
-	// 			<Score />
-	// 			<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
-	// 			<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
-	// 		</div>
-	// 	);
-	// }
 }
 
 export default App;
