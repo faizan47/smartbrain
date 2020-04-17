@@ -10,17 +10,6 @@
 	width: 500px;
 	height: auto;
 }
-.demo-explorer-media-view {
-	ms-flex: 1 1 auto;
-	flex: 1 1 auto;
-	-ms-flex-pack: center;
-	justify-content: center;
-	-ms-flex-align: center;
-	align-items: center;
-	display: -ms-flexbox;
-	display: flex;
-	position: relative;
-}
 .image-view {
 	position: absolute;
 	top: 0;
@@ -34,4 +23,9 @@
 	max-height: 100%;
 	height: auto;
 	width: auto;
+}
+.image-wrapper {
+	position: relative;
+	max-width: max-content;
+	margin: 0 auto;
 }

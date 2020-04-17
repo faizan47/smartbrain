@@ -6,8 +6,8 @@ const FacePicture = ({ picture, boxes }) => {
 	boxesArr.push(box);
 
 	return (
-		<div className="center ma">
-			<div className="absolute mt2">
+		<div className="image-wrapper">
+			<div className="image-container">
 				<img id="image" alt="" src={picture} />
 			</div>
 			<div className="bounding-box-container"> {[ ...boxesArr ]}</div>
