@@ -27,6 +27,7 @@ class Login extends Component {
 			if (response.status === 200) {
 				this.setState({ isLoggedIn: true });
 				this.props.onRouteChange('home');
+				this.props.loadUser(await response.json());
 			}
 		} catch (error) {
 			this.props.onRouteChange('login');

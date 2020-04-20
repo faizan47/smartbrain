@@ -6,8 +6,10 @@ class Navigation extends Component {
 	}
 	onLogout = async () => {
 		try {
-			const response = await fetch('localhost:3000/signout');
-			if (response.status === 200) this.onRouteChange('logout');
+			const response = await fetch('http://localhost:3001/signout', {
+				method: 'post'
+			});
+			if (response.status === 200) this.props.onRouteChange('logout');
 		} catch (error) {
 			console.log(error);
 		}

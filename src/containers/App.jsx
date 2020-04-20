@@ -38,9 +38,22 @@ class App extends Component {
 			imageUrl: '',
 			boxes: {},
 			route: 'login',
-			isLoggedIn: false
+			isLoggedIn: false,
+			user: {}
 		};
 	}
+	loadUser = async (data) => {
+		this.setState({
+			user: {
+				id: data[0].id,
+				name: data[0].name,
+				email: data[0].email,
+				score: data[0].score,
+				joined: data[0].joined
+			},
+			isLoggedIn: true
+		});
+	};
 
 	onInputChange = (e) => {
 		this.setState({ imageUrl: e.target.value });
@@ -54,9 +67,21 @@ class App extends Component {
 		try {
 			const data = await app.models.predict(model, this.state.imageUrl);
 			const response = data.outputs[0].data.regions;
+			this.setState({ faceCount: response.length });
 			for (let res of response) {
 				this.generateFaceStyles(res.region_info.bounding_box);
 			}
+			await fetch('http://localhost:3001/update-score', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					id: this.state.user.id,
+					score: response.length
+				})
+			});
+			this.setState({
+				user: { ...this.state.user, score: response.length + Number(this.state.user.score) }
+			});
 		} catch (error) {
 			console.log(error, 'error');
 		}
@@ -74,7 +99,6 @@ class App extends Component {
 		this.setState({ boxes: style });
 	};
 	onRouteChange = (route) => {
-		
 		if (route === 'home') {
 			this.setState({ isLoggedIn: true });
 		} else if (route === 'logout') {
@@ -85,13 +109,13 @@ class App extends Component {
 	render() {
 		const AuthFlow = () => {
 			if (this.state.route === 'login' || this.state.route === 'logout') {
-				return <Login onRouteChange={this.onRouteChange} />;
+				return <Login loadUser={this.loadUser} onRouteChange={this.onRouteChange} />;
 			} else if (this.state.route === 'register') {
 				return <Register onRouteChange={this.onRouteChange} />;
 			} else {
 				return (
 					<Fragment>
-						<Score />
+						<Score score={this.state.user.score} name={this.state.user.name} />
 						<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
 						<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
 					</Fragment>
