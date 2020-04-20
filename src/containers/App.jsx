@@ -74,6 +74,7 @@ class App extends Component {
 		this.setState({ boxes: style });
 	};
 	onRouteChange = (route) => {
+		
 		if (route === 'home') {
 			this.setState({ isLoggedIn: true });
 		} else if (route === 'logout') {
