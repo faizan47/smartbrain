@@ -1,10 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Component } from 'react';
 
 class Score extends Component {
-	constructor(props) {
-		super();
-	}
 	render() {
 		return (
 			<div className="mt5">

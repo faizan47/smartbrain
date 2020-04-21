@@ -8,15 +8,15 @@ import FacePicture from '../components/FaceRecognition/FacePicture';
 import Register from '../components/Register/Register';
 import Login from '../components/Login/Login';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 
-const Clarifai_API_KEY = process.env.REACT_APP_CLARIFAI_API_KEY;
-
-const app = new Clarifai.App({
-	apiKey: Clarifai_API_KEY
-});
-
-const model = 'a403429f2ddf4b49b307e318f00e528b';
+const initialState = {
+	input: '',
+	imageUrl: '',
+	boxes: '',
+	route: 'login',
+	isLoggedIn: false,
+	user: {}
+};
 
 const particlesOptions = {
 	particles: {
@@ -33,14 +33,7 @@ const particlesOptions = {
 class App extends Component {
 	constructor() {
 		super();
-		this.state = {
-			input: '',
-			imageUrl: '',
-			boxes: {},
-			route: 'login',
-			isLoggedIn: false,
-			user: {}
-		};
+		this.state = initialState;
 	}
 	loadUser = async (data) => {
 		this.setState({
@@ -65,8 +58,14 @@ class App extends Component {
 
 	sendImage = async () => {
 		try {
-			const data = await app.models.predict(model, this.state.imageUrl);
-			const response = data.outputs[0].data.regions;
+			let data = await fetch('http://localhost:3001/send-image', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					image: this.state.imageUrl
+				})
+			});
+			let response = await data.json();
 			this.setState({ faceCount: response.length });
 			for (let res of response) {
 				this.generateFaceStyles(res.region_info.bounding_box);
@@ -102,7 +101,7 @@ class App extends Component {
 		if (route === 'home') {
 			this.setState({ isLoggedIn: true });
 		} else if (route === 'logout') {
-			this.setState({ isLoggedIn: false });
+			this.setState(initialState);
 		}
 		this.setState({ route });
 	};
@@ -117,7 +116,11 @@ class App extends Component {
 					<Fragment>
 						<Score score={this.state.user.score} name={this.state.user.name} />
 						<FaceRecognition onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
-						<FacePicture boxes={this.state.boxes} picture={this.state.imageUrl} />
+						<FacePicture
+							isLoggedIn={this.isLoggedIn}
+							boxes={this.state.boxes}
+							picture={this.state.imageUrl}
+						/>
 					</Fragment>
 				);
 			}

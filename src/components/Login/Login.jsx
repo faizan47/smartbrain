@@ -14,9 +14,9 @@ class Login extends Component {
 	onPasswordChange = (e) => {
 		this.setState({ userPassword: e.target.value });
 	};
-	onSignIn = async () => {
+	onLogin = async () => {
 		try {
-			const response = await fetch('http://localhost:3001/signin', {
+			const response = await fetch('http://localhost:3001/login', {
 				method: 'post',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -40,7 +40,7 @@ class Login extends Component {
 				<main className="pa4 black-80">
 					<div className="measure">
 						<fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-							<legend className="f1 fw6 ph0 mh0">Sign In</legend>
+							<legend className="f1 fw6 ph0 mh0">Log In</legend>
 
 							<div className="mt3">
 								<label className="db fw6 lh-copy f6" htmlFor="email-address">
@@ -69,14 +69,14 @@ class Login extends Component {
 						</fieldset>
 						<div>
 							<input
-								onClick={this.onSignIn}
+								onClick={this.onLogin}
 								className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
 								type="submit"
-								value="Login"
+								value="Log In"
 							/>
 						</div>
 						<div className="lh-copy mt3 pointer">
-							<a onClick={() => onRouteChange('register')} className="f3 link dim black db">
+							<a href="#0" onClick={() => onRouteChange('register')} className="f3 link dim black db">
 								Register
 							</a>
 						</div>

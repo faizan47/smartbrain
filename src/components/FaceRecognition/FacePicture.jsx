@@ -2,9 +2,11 @@ import React from 'react';
 
 let boxesArr = [];
 const FacePicture = ({ picture, boxes }) => {
-	const box = <div key={Math.random()} className="bounding-box" style={boxes} />;
-	if (boxes.inset) {
+	if (boxes && boxes.inset) {
+		const box = <div key={Math.random()} className="bounding-box" style={boxes} />;
 		boxesArr.push(box);
+	} else {
+		boxesArr = [];
 	}
 
 	return (

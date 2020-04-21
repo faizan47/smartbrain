@@ -1,9 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
 class Navigation extends Component {
-	constructor(props) {
-		super(props);
-	}
 	onLogout = async () => {
 		try {
 			const response = await fetch('http://localhost:3001/signout', {
